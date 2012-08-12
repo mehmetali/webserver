@@ -324,6 +324,7 @@ cherokee_handler_cgi_base_build_basic_env (
 			ret = cherokee_x_real_ip_is_allowed (&cgi_props->x_real_ip, &conn->socket);
 			if (ret == ret_ok) {
 				cuint_t     i;
+				cuint_t     colon_count = 0;
 				const char *port_end = NULL;
 				const char *colon    = NULL;
 				const char *end      = NULL;
@@ -340,7 +341,7 @@ cherokee_handler_cgi_base_build_basic_env (
 
 					if (p[i] == ':') {
 						colon = &p[i];
-						break;
+						colon_count++;
 					}
 				}
 
@@ -348,7 +349,7 @@ cherokee_handler_cgi_base_build_basic_env (
 					end = p + p_len;
 				}
 
-				if (colon != NULL) {
+				if (colon != NULL && colon_count == 1) {
 					port_end = colon + 1;
 					while ((*port_end >= '0') && (*port_end <= '9')) {
 						port_end++;
@@ -381,7 +382,7 @@ cherokee_handler_cgi_base_build_basic_env (
 	}
 
 	/* HTTP_HOST and SERVER_NAME. The difference between them is that
-	 * HTTP_HOST can include the «:PORT» text, and SERVER_NAME only
+	 * HTTP_HOST can include the ï¿½:PORTï¿½ text, and SERVER_NAME only
 	 * the name
 	 */
 	cherokee_header_copy_known (&conn->header, header_host, tmp);
